@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Quotation | Thai Kim Textile</title>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700&family=IBM+Plex+Serif:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     MOBILE HEADER (hidden on desktop)
+     ══════════════════════════════════════ -->
+<header class="mobile-header">
+  <div class="mobile-header-left">
+    <div class="mobile-header-logo">
+      <img src="data:image/jpeg;base64,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" alt="logo">
+    </div>
+    <div>
+      <div class="mobile-header-title">Thai Kim Textile</div>
+      <div class="mobile-header-sub">QUOTATION SYSTEM v2</div>
+    </div>
+  </div>
+  <button class="mobile-save-btn" onclick="saveQT()">💾 Save</button>
+</header>
+
+<!-- ══════════════════════════════════════
+     DESKTOP SIDEBAR
+     ══════════════════════════════════════ -->
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-line">
+      <div style="width:40px;height:40px;border-radius:7px;overflow:hidden;background:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+        <img src="data:image/jpeg;base64,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" style="width:36px;height:36px;object-fit:contain;">
+      </div>
+      <div>
+        <div class="sidebar-title">Thai Kim Textile</div>
+        <div class="sidebar-sub">QUOTATION SYSTEM v2</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sidebar-body">
+    <div class="sec-label">โลโก้บริษัท</div>
+    <div class="logo-upload" onclick="document.getElementById('logo-file').click()">
+      <input type="file" id="logo-file" accept="image/*" onchange="loadLogo(event)">
+      <img id="logo-sb" src="" alt="logo" style="display:none;max-width:100%;max-height:46px;object-fit:contain;">
+      <div class="logo-ph" id="logo-ph"><span>🖼️</span>คลิกเปลี่ยนโลโก้</div>
+    </div>
+    <div style="font-size:10px;color:#6b7a9e;margin-top:4px;text-align:center;">คลิกเพื่อเปลี่ยนโลโก้ได้</div>
+    <div id="logo-toast" style="display:none;margin-top:5px;background:rgba(30,126,80,0.15);border:1px solid rgba(30,126,80,0.3);border-radius:5px;padding:4px 9px;font-size:11px;color:#2ecc71;text-align:center;">✓ บันทึกโลโก้แล้ว — จำไว้ตลอด</div>
+    <button onclick="clearLogo()" style="margin-top:6px;width:100%;background:rgba(255,255,255,0.04);color:#8a96b5;border:1px solid rgba(255,255,255,0.08);border-radius:5px;padding:5px;font-size:11px;font-family:'Sarabun',sans-serif;cursor:pointer;">🗑 ลบโลโก้ที่บันทึกไว้</button>
+
+    <div class="sec-label">ใบเสนอราคา</div>
+    <div style="display:flex;gap:6px;margin-bottom:8px;">
+      <button class="btn" style="flex:1;background:#4f8ef7;" onclick="saveQT()">💾 Save</button>
+      <button class="btn" style="flex:1;background:#7c4dff;" onclick="openQTManager()">📂 เปิด QT เก่า</button>
+      <button class="btn" style="background:#888;padding:8px 10px;" onclick="autoQTNo()" title="สร้างเลข QT อัตโนมัติ">🔢</button>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>เลขที่ใบเสนอราคา</label>
+        <input type="text" id="qt-no" placeholder="เช่น FTSQ2604020001" oninput="u()">
+      </div>
+      <div class="form-group">
+        <label>วันที่</label>
+        <input type="date" id="qt-date" oninput="u()">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>เซลส์ Sales</label>
+        <input type="text" id="sales-name" list="sales-list" placeholder="เลือกหรือพิมพ์ชื่อ Sales" oninput="u()" autocomplete="off">
+        <datalist id="sales-list">
+          <option value="Thanadon">
+          <option value="Thip">
+        </datalist>
+      </div>
+      <div class="form-group">
+        <label>ผู้จัดการ Manager</label>
+        <input type="text" id="manager-name" list="manager-list" placeholder="เลือกหรือพิมพ์ชื่อ Manager" oninput="u()" autocomplete="off">
+        <datalist id="manager-list">
+          <option value="Milton Lee">
+          <option value="Bruce Liu">
+        </datalist>
+      </div>
+    </div>
+
+    <div class="sec-label">ข้อมูลลูกค้า</div>
+    <button class="btn" style="width:100%;background:#7c4dff;margin-bottom:8px;" onclick="importCRMCustomers()">🔗 ดึงลูกค้าจาก CRM</button>
+    <div class="form-group cust-wrap">
+      <label>ชื่อบริษัทลูกค้า (ไทย) — พิมพ์เพื่อค้นหา</label>
+      <input type="text" id="cust-th" placeholder="บริษัท ..." autocomplete="off" oninput="onCS(this.value);u()" onfocus="onCS(this.value)" onblur="setTimeout(closeCD,180)">
+      <div class="cust-dd" id="cust-dd"></div>
+    </div>
+    <div class="saved-toast" id="saved-toast">✓ บันทึกข้อมูลลูกค้าแล้ว</div>
+    <div class="form-group">
+      <label>ชื่อบริษัทลูกค้า (English)</label>
+      <input type="text" id="cust-en" placeholder="Company Ltd." oninput="u()">
+    </div>
+    <div class="form-group">
+      <label>ที่อยู่</label>
+      <textarea id="cust-addr" rows="2" placeholder="ที่อยู่ลูกค้า..." oninput="u()"></textarea>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>เลขผู้เสียภาษี</label>
+        <input type="text" id="cust-tax" placeholder="0000000000000" oninput="u()">
+      </div>
+      <div class="form-group">
+        <label>เบอร์โทร</label>
+        <input type="text" id="cust-tel" placeholder="0XX-XXX-XXXX" oninput="u()">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>ผู้ติดต่อ / Contact</label>
+      <input type="text" id="cust-contact" placeholder="คุณ..." oninput="u()">
+    </div>
+    <div class="form-group">
+      <label>ที่อยู่จัดส่ง (ถ้าต่างจากที่อยู่บริษัท)</label>
+      <textarea id="cust-deliver" rows="2" placeholder="ที่อยู่จัดส่ง..." oninput="u()"></textarea>
+    </div>
+    <div class="cust-actions">
+      <button class="btn-save-cust" onclick="saveCust()">💾 บันทึกลูกค้านี้</button>
+      <button class="btn-clear-cust" onclick="clearCust()">✕ ล้าง</button>
+    </div>
+
+    <div class="sec-label">รายการผ้า</div>
+    <div id="items-wrap-desktop-placeholder" style="display:none"></div>
+    <button class="btn btn-add" style="display:none" onclick="addItem()">＋</button>
+
+    <div class="sec-label">ส่วนลด &amp; ค่าจัดส่ง &amp; VAT</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>ส่วนลด (%)</label>
+        <input type="number" id="discount" min="0" max="100" placeholder="0" oninput="u()">
+      </div>
+      <div class="form-group">
+        <label>ค่าจัดส่ง (฿)</label>
+        <input type="number" id="delivery-fee" min="0" placeholder="0" oninput="u()">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>VAT 7%</label>
+      <select id="vat" onchange="u()">
+        <option value="yes">รวม VAT 7%</option>
+        <option value="no">ไม่รวม VAT</option>
+      </select>
+    </div>
+
+    <div class="sec-label">เงื่อนไข</div>
+    <div class="form-group">
+      <label>การจัดส่ง / Delivery Term</label>
+      <input type="text" id="t-delivery" value="จัดส่งถึงที่อยู่ในเอกสาร / Door to Door" readonly style="background:#f0f4ff;color:#1F3864;font-weight:500;cursor:default;">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Lead Time</label>
+        <input type="text" id="t-lead" placeholder="7-14 วัน" oninput="u()">
+      </div>
+      <div class="form-group">
+        <label>Validity</label>
+        <input type="text" id="t-valid" placeholder="30 วัน" oninput="u()">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>เงื่อนไขชำระ / Payment Term</label>
+      <select id="t-payment" onchange="u()" style="width:100%">
+        <option value="">-- เลือก --</option>
+        <option value="Credit 30 Days">Credit 30 Days</option>
+        <option value="Cash / Bank Transfer">Cash / Bank Transfer</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>มัดจำ Deposit</label>
+        <input type="text" id="t-deposit" placeholder="30% / N/A" oninput="u()">
+      </div>
+      <div class="form-group">
+        <label>ยอดคงเหลือ Balance</label>
+        <input type="text" id="t-balance" placeholder="คำนวณอัตโนมัติ" readonly style="background:#f0f4ff;color:#1F3864;font-weight:500;cursor:default;">
+      </div>
+    </div>
+    <div class="form-group">
+      <label>หมายเหตุ / Remark</label>
+      <textarea id="remark" rows="2" placeholder="ข้อความเพิ่มเติม..." oninput="u()"></textarea>
+    </div>
+  </div>
+
+  <div class="sidebar-footer print-hide">
+    <button class="btn btn-excel" onclick="exportExcel()">📊 Export Excel</button>
+    <button class="btn" style="background:#e67e22;color:#fff;" onclick="exportPNG()">🖼️ Export PNG</button>
+    <button class="btn btn-pdf" onclick="exportPDF()">📄 Export PDF</button>
+    <button class="btn btn-print" onclick="window.print()">🖨️ Print</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN CONTENT AREA
+     ══════════════════════════════════════ -->
+<div class="preview-area">
+
+  <!-- ── PANEL: FORM (mobile only) ── -->
+  <div class="mobile-panel" id="panel-form">
+    <!-- Logo section -->
+    <div class="sec-label" style="padding:0 16px;margin-top:16px;">โลโก้ &amp; ใบเสนอราคา</div>
+    <div style="padding:0 16px;">
+      <div style="display:flex;gap:8px;margin-bottom:10px;">
+        <button class="btn" style="flex:1;background:#7c4dff;" onclick="openQTManager()">📂 เปิด QT เก่า</button>
+        <button class="btn" style="background:#888;padding:11px 14px;flex:0 0 auto;width:auto;" onclick="autoQTNo()">🔢</button>
+      </div>
+      <div class="form-group">
+        <label>เลขที่ใบเสนอราคา</label>
+        <input type="text" id="qt-no-m" placeholder="เช่น FTSQ2604020001" oninput="syncField('qt-no-m','qt-no')">
+      </div>
+      <div class="form-group">
+        <label>วันที่</label>
+        <input type="date" id="qt-date-m" oninput="syncField('qt-date-m','qt-date')">
+      </div>
+      <div class="form-group">
+        <label>เซลส์ Sales</label>
+        <input type="text" id="sales-name-m" list="sales-list-m" placeholder="เลือกหรือพิมพ์ชื่อ Sales" oninput="syncField('sales-name-m','sales-name')" autocomplete="off">
+        <datalist id="sales-list-m">
+          <option value="Thanadon">
+          <option value="Thip">
+        </datalist>
+      </div>
+      <div class="form-group">
+        <label>ผู้จัดการ Manager</label>
+        <input type="text" id="manager-name-m" list="manager-list-m" placeholder="เลือกหรือพิมพ์ชื่อ Manager" oninput="syncField('manager-name-m','manager-name')" autocomplete="off">
+        <datalist id="manager-list-m">
+          <option value="Milton Lee">
+          <option value="Bruce Liu">
+        </datalist>
+      </div>
+    </div>
+
+    <div class="sec-label" style="padding:0 16px;margin-top:16px;">ข้อมูลลูกค้า</div>
+    <div style="padding:0 16px;">
+      <button class="btn" style="width:100%;background:#7c4dff;margin-bottom:10px;" onclick="importCRMCustomers()">🔗 ดึงลูกค้าจาก CRM</button>
+      <div class="form-group cust-wrap">
+        <label>ชื่อบริษัทลูกค้า (ไทย)</label>
+        <input type="text" id="cust-th-m" placeholder="บริษัท ..." autocomplete="off"
+          oninput="syncField('cust-th-m','cust-th');onCS(this.value);u()"
+          onfocus="onCS(this.value)" onblur="setTimeout(closeCD,180)">
+        <div class="cust-dd" id="cust-dd-m"></div>
+      </div>
+      <div class="saved-toast" id="saved-toast-m">✓ บันทึกข้อมูลลูกค้าแล้ว</div>
+      <div class="form-group">
+        <label>ชื่อบริษัทลูกค้า (English)</label>
+        <input type="text" id="cust-en-m" placeholder="Company Ltd." oninput="syncField('cust-en-m','cust-en')">
+      </div>
+      <div class="form-group">
+        <label>ที่อยู่</label>
+        <textarea id="cust-addr-m" rows="2" placeholder="ที่อยู่ลูกค้า..." oninput="syncField('cust-addr-m','cust-addr')"></textarea>
+      </div>
+      <div class="form-group">
+        <label>เลขผู้เสียภาษี</label>
+        <input type="text" id="cust-tax-m" placeholder="0000000000000" oninput="syncField('cust-tax-m','cust-tax')">
+      </div>
+      <div class="form-group">
+        <label>เบอร์โทร</label>
+        <input type="tel" id="cust-tel-m" placeholder="0XX-XXX-XXXX" oninput="syncField('cust-tel-m','cust-tel')">
+      </div>
+      <div class="form-group">
+        <label>ผู้ติดต่อ / Contact</label>
+        <input type="text" id="cust-contact-m" placeholder="คุณ..." oninput="syncField('cust-contact-m','cust-contact')">
+      </div>
+      <div class="form-group">
+        <label>ที่อยู่จัดส่ง</label>
+        <textarea id="cust-deliver-m" rows="2" placeholder="ที่อยู่จัดส่ง..." oninput="syncField('cust-deliver-m','cust-deliver')"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:6px;">
+        <button class="btn-save-cust" onclick="saveCust()">💾 บันทึกลูกค้านี้</button>
+        <button class="btn-clear-cust" onclick="clearCustM()">✕ ล้าง</button>
+      </div>
+    </div>
+
+    <div class="sec-label" style="padding:0 16px;margin-top:16px;">รายการผ้า</div>
+    <div style="padding:0 16px;">
+      <div id="items-wrap"></div>
+      <button class="btn btn-add" onclick="addItem()">＋ เพิ่มรายการผ้า</button>
+    </div>
+
+    <div class="sec-label" style="padding:0 16px;margin-top:16px;">ส่วนลด &amp; ค่าจัดส่ง &amp; VAT</div>
+    <div style="padding:0 16px;">
+      <div class="form-group">
+        <label>ส่วนลด (%)</label>
+        <input type="number" id="discount-m" min="0" max="100" placeholder="0" oninput="syncField('discount-m','discount')">
+      </div>
+      <div class="form-group">
+        <label>ค่าจัดส่ง (฿)</label>
+        <input type="number" id="delivery-fee-m" min="0" placeholder="0" oninput="syncField('delivery-fee-m','delivery-fee')">
+      </div>
+      <div class="form-group">
+        <label>VAT 7%</label>
+        <select id="vat-m" onchange="syncSelect('vat-m','vat')">
+          <option value="yes">รวม VAT 7%</option>
+          <option value="no">ไม่รวม VAT</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="sec-label" style="padding:0 16px;margin-top:16px;">เงื่อนไข</div>
+    <div style="padding:0 16px;">
+      <div class="form-group">
+        <label>Lead Time</label>
+        <input type="text" id="t-lead-m" placeholder="7-14 วัน" oninput="syncField('t-lead-m','t-lead')">
+      </div>
+      <div class="form-group">
+        <label>Validity</label>
+        <input type="text" id="t-valid-m" placeholder="30 วัน" oninput="syncField('t-valid-m','t-valid')">
+      </div>
+      <div class="form-group">
+        <label>เงื่อนไขชำระ / Payment Term</label>
+        <select id="t-payment-m" onchange="syncSelect('t-payment-m','t-payment')">
+          <option value="">-- เลือก --</option>
+          <option value="Credit 30 Days">Credit 30 Days</option>
+          <option value="Cash / Bank Transfer">Cash / Bank Transfer</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>มัดจำ Deposit</label>
+        <input type="text" id="t-deposit-m" placeholder="30% / N/A" oninput="syncField('t-deposit-m','t-deposit')">
+      </div>
+      <div class="form-group">
+        <label>ยอดคงเหลือ Balance</label>
+        <input type="text" id="t-balance-m" placeholder="คำนวณอัตโนมัติ" readonly style="opacity:0.7;">
+      </div>
+      <div class="form-group">
+        <label>หมายเหตุ / Remark</label>
+        <textarea id="remark-m" rows="2" placeholder="ข้อความเพิ่มเติม..." oninput="syncField('remark-m','remark')"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL: PREVIEW ── -->
+  <div class="mobile-panel" id="panel-preview">
+    <div class="doc-preview-scaler" id="doc-scaler">
+      <div id="qdoc">
+        <div class="doc-accent"></div>
+        <div class="doc-inner">
+          <!-- HEADER -->
+          <div class="doc-hd">
+            <div>
+              <img id="doc-logo" src="" alt="logo" style="display:none;max-height:58px;max-width:160px;object-fit:contain;margin-bottom:6px;">
+              <div class="doc-co-nameth">บริษัท ไทยคิม เท็กไทล์ จำกัด</div>
+              <div class="doc-co-nameen">Thai Kim Textile Co., Ltd.</div>
+              <div class="doc-co-addr">
+                เลขที่ 92/25 ชั้น 11 อาคารสาทรธานี 2 ถ.สาทรเหนือ แขวงสีลม เขตบางรัก กรุงเทพฯ 10500<br>
+                92/25, 11F, Sathorn Thani 2, N.Sathorn Rd., Silom, Bangrak, Bangkok 10500<br>
+                Tel: 061-879-8222
+              </div>
+              <div class="doc-co-tax">เลขประจำตัวผู้เสียภาษี / Tax ID: 0105565028514</div>
+            </div>
+            <div class="doc-title-block">
+              <div class="doc-title-th">ใบเสนอราคา</div>
+              <div class="doc-title-en">Quotation</div>
+              <div style="font-size:9px;color:#8a96b5;margin-top:4px;margin-bottom:6px;font-style:italic;max-width:280px;text-align:right;line-height:1.5;">ถือว่าตกลงซื้อขายกันเมื่อมีการส่งมอบสินค้าหรือการชำระเงินเกิดขึ้น<br>โดยยึดตามใบส่งของและนโยบายของบริษัท</div>
+              <div class="doc-nobox">
+                <div class="lbl">เลขที่ / No.</div>
+                <div class="val" id="d-qtno">—</div>
+                <div class="lbl" style="margin-top:3px">วันที่ / Date</div>
+                <div class="val" id="d-qtdate">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- META STRIP -->
+          <div style="display:flex;gap:10px;margin-bottom:14px;">
+            <div style="flex:1;background:#EBF2FA;border-radius:5px;padding:8px 14px;border-left:3px solid #1F3864;">
+              <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#1F3864;margin-bottom:5px;">ฝ่ายขาย / SELLER SIDE</div>
+              <div style="display:flex;gap:20px;flex-wrap:wrap;">
+                <div class="meta-item"><div class="meta-lbl">Sales</div><div class="meta-val" id="d-sales">—</div></div>
+                <div class="meta-item"><div class="meta-lbl">Manager</div><div class="meta-val" id="d-mgr">—</div></div>
+              </div>
+            </div>
+            <div style="flex:1;background:#FFF9EE;border-radius:5px;padding:8px 14px;border-left:3px solid #C8963E;">
+              <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#C8963E;margin-bottom:5px;">ฝ่ายซื้อ / BUYER SIDE</div>
+              <div style="display:flex;gap:20px;flex-wrap:wrap;">
+                <div class="meta-item"><div class="meta-lbl">ผู้ติดต่อ</div><div class="meta-val" id="d-contact">—</div></div>
+                <div class="meta-item"><div class="meta-lbl">เบอร์โทร</div><div class="meta-val" id="d-tel">—</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- INFO GRID -->
+          <div class="doc-info">
+            <div class="icard">
+              <div class="icard-lbl">ผู้ซื้อ / Bill To</div>
+              <div class="icard-val" id="d-cth">—</div>
+              <div class="icard-sub" id="d-cen"></div>
+              <div class="icard-sub" id="d-caddr"></div>
+              <div class="icard-sub" id="d-ctax"></div>
+            </div>
+            <div class="icard">
+              <div class="icard-lbl">ที่อยู่จัดส่ง / Ship To</div>
+              <div class="icard-val" id="d-cdth">—</div>
+              <div class="icard-sub" id="d-cdeliver"></div>
+            </div>
+          </div>
+
+          <!-- TABLE -->
+          <table class="doc-table">
+            <thead>
+              <tr>
+                <th style="width:26px">#</th>
+                <th>รหัสผ้า / Item</th>
+                <th>สี</th>
+                <th>ส่วนประกอบ</th>
+                <th class="c">ความกว้าง (cm)</th>
+                <th class="c">น้ำหนัก (gsm)</th>
+                <th class="r">ราคา/หลา</th>
+                <th class="c">จำนวน (หลา)</th>
+                <th class="c">จำนวน (ม้วน)</th>
+                <th class="r">รวม (฿)</th>
+              </tr>
+            </thead>
+            <tbody id="d-tbody">
+              <tr><td colspan="10" style="text-align:center;color:#aaa;padding:16px;font-style:italic">กรุณาเพิ่มรายการผ้า</td></tr>
+            </tbody>
+          </table>
+
+          <!-- TOTALS -->
+          <div class="doc-totals">
+            <div class="tot-box">
+              <div class="tot-row"><span class="lbl">ยอดรวม / Subtotal</span><span class="amt" id="d-sub">0.00 ฿</span></div>
+              <div class="tot-row tot-disc" id="d-discrow" style="display:none">
+                <span class="lbl">ส่วนลด <span id="d-discpct">0</span>%</span>
+                <span class="amt" id="d-discamt">0.00 ฿</span>
+              </div>
+              <div class="tot-row" id="d-afrow" style="display:none">
+                <span class="lbl">หลังส่วนลด</span>
+                <span class="amt" id="d-afamt">0.00 ฿</span>
+              </div>
+              <div class="tot-row" id="d-delrow">
+                <span class="lbl">ค่าจัดส่ง / Delivery Fee</span>
+                <span class="amt" id="d-delamt">0.00 ฿</span>
+              </div>
+              <div class="tot-row" id="d-vatrow">
+                <span class="lbl">VAT 7%</span>
+                <span class="amt" id="d-vatamt">0.00 ฿</span>
+              </div>
+              <div class="tot-row grand">
+                <span class="lbl">ยอดรวมสุทธิ / Grand Total</span>
+                <span class="amt" id="d-grand">0.00 ฿</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- TERMS -->
+          <div class="doc-terms">
+            <div class="term-item"><div class="term-lbl">การจัดส่ง / Delivery</div><div class="term-val" id="d-tdeliv">—</div></div>
+            <div class="term-item"><div class="term-lbl">ระยะเวลาส่ง / Lead Time</div><div class="term-val" id="d-tlead">—</div></div>
+            <div class="term-item"><div class="term-lbl">เงื่อนไขชำระ / Payment Term</div><div class="term-val" id="d-tpay">—</div></div>
+            <div class="term-item"><div class="term-lbl">อายุเอกสาร / Validity</div><div class="term-val" id="d-tvalid">—</div></div>
+            <div class="term-item"><div class="term-lbl">มัดจำ / Deposit</div><div class="term-val" id="d-tdep">—</div></div>
+            <div class="term-item"><div class="term-lbl">ยอดคงเหลือ / Balance</div><div class="term-val" id="d-tbal">—</div></div>
+          </div>
+
+          <!-- REMARK -->
+          <div class="doc-remark" id="d-remarkbox">
+            <div class="rlbl">หมายเหตุ / Remark</div>
+            <div class="rval" id="d-remark"></div>
+          </div>
+
+          <!-- BANK -->
+          <div class="doc-bank" id="d-bankbox">
+            <div class="blbl">ข้อมูลธนาคาร / Bank Details</div>
+            <div class="brow" id="d-bankrow">
+              <span><span class="bk">ชื่อบัญชี:</span> <span class="bv" id="d-bank-name">บจก.ไทย คิม เท็กซ์ไทล์</span></span>
+              <span><span class="bk">ธนาคาร:</span> <span class="bv" id="d-bank-bank">กสิกรไทย (K-Bank)</span></span>
+              <span><span class="bk">เลขบัญชี:</span> <span class="bv" id="d-bank-no">129-1-17288-8</span></span>
+            </div>
+          </div>
+
+          <!-- CONDITIONS -->
+          <ol class="doc-cond">
+            <li>หลังได้รับสินค้าภายใน 7 วัน หากพบเจอปัญหา กรุณาอย่าตัดสินค้า ทางบริษัทจะส่งทีมเข้าตรวจสอบสินค้าถึงสถานที่ และเจรจาร่วมมือกันแก้ไขสถานการณ์ ตามความสมเหตุสมผล</li>
+            <li>กรณีพิพาทด้านธุรกิจ-การเงิน ให้ยึดกฎหมายไทยเป็นหลัก</li>
+            <li>เอกสารนี้ถือเป็นหลักฐานการตกลงซื้อขาย คู่สัญญาแต่ละฝ่ายเก็บไว้ 1 ชุด</li>
+          </ol>
+
+          <!-- SIGNATURE -->
+          <div class="doc-sign">
+            <div class="sign-box">
+              <div class="sign-space"></div>
+              <div class="sign-line"></div>
+              <div class="sign-name" id="d-sign-sel">บริษัท ไทยคิม เท็กไทล์ จำกัด</div>
+              <div class="sign-role">ผู้ขาย / Seller</div>
+              <div class="sign-date">วันที่ / Date: ___________</div>
+            </div>
+            <div class="sign-box">
+              <div class="sign-space"></div>
+              <div class="sign-line"></div>
+              <div class="sign-name" id="d-sign-buy">ลูกค้า / Customer</div>
+              <div class="sign-role">ผู้ซื้อ / Buyer</div>
+              <div class="sign-date">วันที่ / Date: ___________</div>
+            </div>
+          </div>
+
+          <div class="doc-foot">
+            <span>Thai Kim Textile Co., Ltd. | Tax ID: 0105565028514 | Tel: 061-879-8222</span>
+            <span id="d-footqt"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PANEL: EXPORT (mobile only) ── -->
+  <div class="mobile-panel" id="panel-export">
+    <div style="padding:16px;">
+      <!-- Summary card -->
+      <div class="summary-card">
+        <div class="summary-total-lbl">ยอดรวมสุทธิ</div>
+        <div class="summary-total" id="m-grand">0.00 ฿</div>
+        <div class="summary-qtno" id="m-qtno">—</div>
+        <div class="summary-cust" id="m-cust">—</div>
+      </div>
+
+      <!-- Export buttons -->
+      <div class="export-card">
+        <div class="export-card-title">📤 Export ไฟล์</div>
+        <button class="export-btn-lg export-btn-green" onclick="exportExcel()">📊 Export Excel</button>
+        <button class="export-btn-lg" style="background:#e67e22;color:#fff;" onclick="exportPNG()">🖼️ Export PNG</button>
+        <button class="export-btn-lg export-btn-red" onclick="exportPDF()">📄 Export PDF</button>
+        <button class="export-btn-lg export-btn-blue" onclick="window.print()">🖨️ Print</button>
+      </div>
+
+      <!-- QT Management -->
+      <div class="export-card">
+        <div class="export-card-title">💾 จัดการ QT</div>
+        <button class="export-btn-lg" style="background:#4f8ef7;color:#fff;" onclick="saveQT()">💾 บันทึก QT นี้</button>
+        <button class="export-btn-lg" style="background:#7c4dff;color:#fff;" onclick="openQTManager()">📂 เปิด QT เก่า</button>
+      </div>
+
+      <!-- Logo upload -->
+      <div class="export-card">
+        <div class="export-card-title">🖼️ โลโก้บริษัท</div>
+        <div class="logo-upload" style="margin-bottom:8px;" onclick="document.getElementById('logo-file-m').click()">
+          <input type="file" id="logo-file-m" accept="image/*" onchange="loadLogo(event)">
+          <img id="logo-sb-m" src="" alt="logo" style="display:none;max-width:100%;max-height:46px;object-fit:contain;">
+          <div id="logo-ph-m" style="font-size:12px;color:#8a96b5;padding:8px;">🖼️ แตะเพื่อเปลี่ยนโลโก้</div>
+        </div>
+        <button onclick="clearLogo()" style="width:100%;background:rgba(255,255,255,0.06);color:#8a96b5;border:1px solid rgba(255,255,255,0.1);border-radius:8px;padding:10px;font-size:13px;font-family:'Sarabun',sans-serif;cursor:pointer;">🗑 ลบโลโก้ที่บันทึกไว้</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.preview-area -->
+
+<!-- ══════════════════════════════════════
+     MOBILE BOTTOM NAV
+     ══════════════════════════════════════ -->
+<nav class="mobile-nav">
+  <button class="mobile-nav-btn active" id="nav-form" onclick="switchTab('form')">
+    <span class="nav-icon">📝</span>
+    <span>กรอกข้อมูล</span>
+  </button>
+  <button class="mobile-nav-btn" id="nav-preview" onclick="switchTab('preview')">
+    <span class="nav-icon">👁️</span>
+    <span>ตัวอย่าง</span>
+  </button>
+  <button class="mobile-nav-btn" id="nav-export" onclick="switchTab('export')">
+    <span class="nav-icon">📤</span>
+    <span>Export</span>
+  </button>
+</nav>
+
+<script>
+// ── Mobile Tab Switching ─────────────────────────────────────
+function switchTab(tab) {
+  ['form','preview','export'].forEach(t => {
+    document.getElementById('panel-' + t).classList.toggle('active', t === tab);
+    document.getElementById('nav-' + t).classList.toggle('active', t === tab);
+  });
+  if (tab === 'preview') scaleDoc();
+  if (tab === 'export') updateExportSummary();
+}
+
+// ── Scale document to fit mobile screen ─────────────────────
+function scaleDoc() {
+  if (window.innerWidth >= 768) return;
+  const scaler = document.getElementById('doc-scaler');
+  const doc = document.getElementById('qdoc');
+  if (!scaler || !doc) return;
+  const containerW = scaler.offsetWidth || window.innerWidth - 24;
+  const docW = 794;
+  const scale = containerW / docW;
+  doc.style.transform = `scale(${scale})`;
+  doc.style.transformOrigin = 'top left';
+  doc.style.width = docW + 'px';
+  scaler.style.height = (doc.scrollHeight * scale) + 'px';
+}
+
+window.addEventListener('resize', scaleDoc);
+
+// ── Sync mobile fields to desktop hidden fields ──────────────
+function syncField(fromId, toId) {
+  const from = document.getElementById(fromId);
+  const to = document.getElementById(toId);
+  if (from && to) { to.value = from.value; u(); }
+  // also sync balance mirror
+  const bal = document.getElementById('t-balance');
+  const balM = document.getElementById('t-balance-m');
+  if (bal && balM) balM.value = bal.value;
+}
+
+function syncSelect(fromId, toId) {
+  const from = document.getElementById(fromId);
+  const to = document.getElementById(toId);
+  if (from && to) { to.value = from.value; u(); }
+}
+
+// ── Mirror restoreDraft values to mobile fields ──────────────
+function mirrorToMobile() {
+  const pairs = [
+    ['qt-no','qt-no-m'], ['qt-date','qt-date-m'],
+    ['sales-name','sales-name-m'], ['manager-name','manager-name-m'],
+    ['cust-th','cust-th-m'], ['cust-en','cust-en-m'],
+    ['cust-addr','cust-addr-m'], ['cust-tax','cust-tax-m'],
+    ['cust-tel','cust-tel-m'], ['cust-contact','cust-contact-m'],
+    ['cust-deliver','cust-deliver-m'],
+    ['discount','discount-m'], ['delivery-fee','delivery-fee-m'],
+    ['t-lead','t-lead-m'], ['t-valid','t-valid-m'],
+    ['t-deposit','t-deposit-m'], ['remark','remark-m'],
+    ['t-balance','t-balance-m'],
+  ];
+  pairs.forEach(([src, dst]) => {
+    const s = document.getElementById(src), d = document.getElementById(dst);
+    if (s && d) d.value = s.value;
+  });
+  // selects
+  [['vat','vat-m'],['t-payment','t-payment-m']].forEach(([src, dst]) => {
+    const s = document.getElementById(src), d = document.getElementById(dst);
+    if (s && d) d.value = s.value;
+  });
+}
+
+// ── clearCust for mobile ─────────────────────────────────────
+function clearCustM() {
+  clearCust();
+  ['cust-th-m','cust-en-m','cust-addr-m','cust-tax-m','cust-tel-m','cust-contact-m','cust-deliver-m'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+}
+
+// ── Export summary update ────────────────────────────────────
+function updateExportSummary() {
+  const qtno = document.getElementById('qt-no')?.value || '—';
+  const cust  = document.getElementById('cust-th')?.value || '—';
+  const grand = document.getElementById('d-grand')?.textContent || '0.00 ฿';
+  const el1 = document.getElementById('m-qtno');
+  const el2 = document.getElementById('m-cust');
+  const el3 = document.getElementById('m-grand');
+  if (el1) el1.textContent = qtno;
+  if (el2) el2.textContent = cust;
+  if (el3) el3.textContent = grand;
+}
+
+// ── Init ─────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  if (window.innerWidth < 768) {
+    switchTab('form');
+  }
+
+  // Patch u() to also sync balance to mobile
+  const _origU = window.u;
+  if (_origU) {
+    window.u = function() {
+      _origU();
+      const bal = document.getElementById('t-balance');
+      const balM = document.getElementById('t-balance-m');
+      if (bal && balM) balM.value = bal.value;
+      updateExportSummary();
+    };
+  }
+});
+
+// Patch restoreDraft to mirror values to mobile after load
+const _patchRestore = setInterval(() => {
+  if (typeof restoreDraft === 'function') {
+    const orig = restoreDraft;
+    window.restoreDraft = function(d) {
+      orig(d);
+      setTimeout(() => mirrorToMobile(), 100);
+    };
+    clearInterval(_patchRestore);
+  }
+}, 100);
+</script>
+
+<script src="js/qta.js"></script>
+<script src="js/qt-manager.js"></script>
+<script src="js/export.js"></script>
+</body>
+</html>
