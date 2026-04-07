@@ -163,49 +163,54 @@ async function exportPDF() {
 async function exportPNG() {
   if (typeof validateBeforeExport === "function" && !validateBeforeExport()) return;
   const qtno = gv('qt-no') || 'QT';
-  const el = document.getElementById("qdoc");
-  if (!el) return;
  
-  // บน mobile: qdoc อาจอยู่ใน panel ที่ซ่อนอยู่ → ย้ายออกมา capture แล้วคืนที่
-  const isMobile = window.innerWidth < 768;
-  const scaler = document.getElementById('doc-scaler');
+  // สร้าง wrapper นอกจอ ให้ #qdoc แสดงผลได้เต็มที่
+  const wrapper = document.createElement('div');
+  wrapper.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;background:#fff;z-index:-1;';
+  document.body.appendChild(wrapper);
  
-  if (isMobile) {
-    el.style.transform = 'none';
-    el.style.width = '794px';
-    el.style.position = 'fixed';
-    el.style.left = '-9999px';
-    el.style.top = '0';
-    el.style.zIndex = '-1';
-    document.body.appendChild(el);
-  }
+  const el = document.getElementById('qdoc');
+  if (!el) { document.body.removeChild(wrapper); return; }
+ 
+  // เก็บ parent เดิม + style เดิมไว้คืน
+  const origParent = el.parentNode;
+  const origStyle  = el.getAttribute('style') || '';
+ 
+  // ย้าย qdoc เข้า wrapper ชั่วคราว
+  el.style.cssText = 'width:794px;transform:none;';
+  wrapper.appendChild(el);
  
   u();
   await document.fonts.ready;
-  await new Promise(r => setTimeout(r, 300));
+  await new Promise(r => setTimeout(r, 400));
  
   try {
     const canvas = await html2canvas(el, {
       scale: 3,
       useCORS: true,
-      backgroundColor: "#ffffff",
+      backgroundColor: '#ffffff',
       width: 794,
       windowWidth: 794,
     });
-    const link = document.createElement("a");
-    link.download = "Quotation_" + qtno + ".png";
-    link.href = canvas.toDataURL("image/png");
+ 
+    // คืน qdoc กลับที่เดิม
+    el.setAttribute('style', origStyle);
+    origParent.appendChild(el);
+    document.body.removeChild(wrapper);
+    if (typeof scaleDoc === 'function') scaleDoc();
+ 
+    // บันทึกภาพ
+    const link = document.createElement('a');
+    link.download = 'Quotation_' + qtno + '.png';
+    link.href = canvas.toDataURL('image/png');
     link.click();
-  } finally {
-    if (isMobile && scaler) {
-      el.style.transform = '';
-      el.style.width = '';
-      el.style.position = '';
-      el.style.left = '';
-      el.style.top = '';
-      el.style.zIndex = '';
-      scaler.appendChild(el);
-      if (typeof scaleDoc === 'function') scaleDoc();
-    }
+ 
+  } catch(err) {
+    // คืน qdoc กลับที่เดิมในกรณี error ด้วย
+    el.setAttribute('style', origStyle);
+    origParent.appendChild(el);
+    if (document.body.contains(wrapper)) document.body.removeChild(wrapper);
+    if (typeof scaleDoc === 'function') scaleDoc();
+    alert('❌ บันทึกภาพไม่สำเร็จ: ' + err.message);
   }
 }
