@@ -12,7 +12,7 @@ function exportExcel() {
   const afterDisc = sub2 - discAmt;
   const vatAmt   = vatOn ? afterDisc * 0.07 : 0;  // VAT คำนวณจากยอดสินค้าเท่านั้น ไม่รวมค่าขนส่ง
   const grand    = afterDisc + delFee + vatAmt;
-
+ 
   // ══════════════════════════════════════════════════════════════
   // SHEET 1 : DATA  — format ตาม sample + เพิ่ม color, tel
   // ══════════════════════════════════════════════════════════════
@@ -20,7 +20,7 @@ function exportExcel() {
     ['orderId','customer','tel','custEn','addr','taxId','contact','shipAddr',
      'date','code','color','price','qty','rolls','total','vat','grandTotal']
   ];
-
+ 
   items.forEach(item => {
     const itemVat   = vatOn ? item.amt * 0.07 : 0;
     const grandItem = item.amt + itemVat;
@@ -44,7 +44,7 @@ function exportExcel() {
       grandItem
     ]);
   });
-
+ 
   const wsData = XLSX.utils.aoa_to_sheet(dataRows);
   wsData['!cols'] = [
     {wch:18}, {wch:28}, {wch:14}, {wch:28},  // orderId, customer, tel, custEn
@@ -53,7 +53,7 @@ function exportExcel() {
     {wch:8},  {wch:8},  {wch:12}, {wch:5}, {wch:14}  // qty, rolls, total, vat, grandTotal
   ];
   XLSX.utils.book_append_sheet(wb, wsData, 'DATA');
-
+ 
   // ══════════════════════════════════════════════════════════════
   // SHEET 2 : Quotation — ใบเสนอราคาเต็ม
   // ══════════════════════════════════════════════════════════════
@@ -101,7 +101,7 @@ function exportExcel() {
   rows.push(['ข้อมูลธนาคาร / Bank Details']);
   const salesName = (gv('sales-name') || '').trim().toLowerCase();
   const isThip    = salesName === 'thip';
-
+ 
   if (vatOn) {
     rows.push(['ชื่อบัญชี:', 'บจก.ไทย คิม เท็กซ์ไทล์', 'ธนาคาร:', 'กสิกรไทย (K-Bank)', 'เลขบัญชี:', '129-1-17288-8']);
   } else if (isThip) {
@@ -109,14 +109,14 @@ function exportExcel() {
   } else {
     rows.push(['ชื่อบัญชี:', 'Liu Hongwen', 'ธนาคาร:', 'ไทยพาณิชย์ (SCB)', 'เลขบัญชี:', '245-215274-8']);
   }
-
+ 
   const wsQt = XLSX.utils.aoa_to_sheet(rows);
   wsQt['!cols'] = [{wch:4},{wch:14},{wch:16},{wch:16},{wch:11},{wch:11},{wch:13},{wch:12},{wch:12},{wch:18},{wch:16}];
   XLSX.utils.book_append_sheet(wb, wsQt, 'Quotation');
-
+ 
   XLSX.writeFile(wb,qtno + '.xlsx', { bookType: 'xlsx', type: 'binary' });
 }
-
+ 
 // ── PDF EXPORT ─────────────────────────────────────────────────
 async function exportPDF() {
   if (typeof validateBeforeExport === "function" && !validateBeforeExport()) return;
@@ -158,24 +158,54 @@ async function exportPDF() {
     btns.forEach(b => b.style.visibility = '');
   }
 }
-
+ 
 // ── PNG EXPORT ─────────────────────────────────────────────────
 async function exportPNG() {
+  if (typeof validateBeforeExport === "function" && !validateBeforeExport()) return;
   const qtno = gv('qt-no') || 'QT';
   const el = document.getElementById("qdoc");
+  if (!el) return;
+ 
+  // บน mobile: qdoc อาจอยู่ใน panel ที่ซ่อนอยู่ → ย้ายออกมา capture แล้วคืนที่
+  const isMobile = window.innerWidth < 768;
+  const scaler = document.getElementById('doc-scaler');
+ 
+  if (isMobile) {
+    el.style.transform = 'none';
+    el.style.width = '794px';
+    el.style.position = 'fixed';
+    el.style.left = '-9999px';
+    el.style.top = '0';
+    el.style.zIndex = '-1';
+    document.body.appendChild(el);
+  }
+ 
   u();
   await document.fonts.ready;
-  await new Promise(r => setTimeout(r, 200));
-  const canvas = await html2canvas(el, {
-    scale: 4,
-    useCORS: true,
-    backgroundColor: "#ffffff"
-  });
-  const link = document.createElement("a");
-  link.download = "Quotation_" + qtno + ".png";
-  link.href = canvas.toDataURL("image/png");
-  link.click();
+  await new Promise(r => setTimeout(r, 300));
+ 
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 3,
+      useCORS: true,
+      backgroundColor: "#ffffff",
+      width: 794,
+      windowWidth: 794,
+    });
+    const link = document.createElement("a");
+    link.download = "Quotation_" + qtno + ".png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  } finally {
+    if (isMobile && scaler) {
+      el.style.transform = '';
+      el.style.width = '';
+      el.style.position = '';
+      el.style.left = '';
+      el.style.top = '';
+      el.style.zIndex = '';
+      scaler.appendChild(el);
+      if (typeof scaleDoc === 'function') scaleDoc();
+    }
+  }
 }
-
-
-
